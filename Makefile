@@ -1,9 +1,10 @@
 SHELL=/bin/bash -o pipefail
 
-REGISTRY ?= kubedb
-BIN      := elasticsearch
-IMAGE    := $(REGISTRY)/$(BIN)
-TAG      := $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")
+REGISTRY   ?= kubedb
+BIN        := elasticsearch
+IMAGE      := $(REGISTRY)/$(BIN)
+DB_VERSION := 6.8.0
+TAG        := $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")
 
 .PHONY: push
 push: container
@@ -11,7 +12,8 @@ push: container
 
 .PHONY: container
 container:
-	docker build -t $(IMAGE):$(TAG) .
+	docker pull docker.elastic.co/elasticsearch/elasticsearch:$(DB_VERSION)
+	docker tag docker.elastic.co/elasticsearch/elasticsearch:$(DB_VERSION) $(IMAGE):$(TAG)
 
 .PHONY: version
 version:

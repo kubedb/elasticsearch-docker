@@ -3,7 +3,7 @@ SHELL=/bin/bash -o pipefail
 REGISTRY ?= kubedb
 BIN      := elasticsearch
 IMAGE    := $(REGISTRY)/$(BIN)
-BASE_TAG := 6.5.3
+BASE_TAG := 6.8.0
 TAG      := $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")
 
 .PHONY: push

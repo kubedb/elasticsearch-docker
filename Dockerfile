@@ -25,34 +25,35 @@ RUN set -x                                                                      
   && curl -fsSL -o yq https://github.com/mikefarah/yq/releases/download/2.1.1/yq_linux_amd64 \
   && chmod 755 yq
 
-FROM quay.io/pires/docker-elasticsearch:5.6.4
+FROM quay.io/pires/docker-elasticsearch:6.2.4
 
 RUN set -x \
 	&& apk add --update --no-cache runit curl
 
-ENV NODE_NAME=""
+ENV NODE_NAME="" \
+    ES_TMPDIR="/tmp"
 
-# Install mapper-attachments (https://www.elastic.co/guide/en/elasticsearch/plugins/5.x/mapper-attachments.html)
+# Install mapper-attachments (https://www.elastic.co/guide/en/elasticsearch/plugins/current/ingest-attachment.html)
 RUN ./bin/elasticsearch-plugin install ingest-attachment
 
 # Install search-guard
-RUN ./bin/elasticsearch-plugin install -b com.floragunn:search-guard-5:5.6.4-19.1
+RUN ./bin/elasticsearch-plugin install -b com.floragunn:search-guard-6:6.2.4-23.0
 
-RUN chmod +x -R plugins/search-guard-5/tools/*.sh
+RUN chmod +x -R plugins/search-guard-6/tools/*.sh
 
 # Set environment variables defaults
-ENV ES_JAVA_OPTS "-Xms512m -Xmx512m"
-ENV CLUSTER_NAME "elasticsearch"
-ENV NODE_MASTER true
-ENV NODE_DATA true
-ENV NODE_INGEST true
-ENV HTTP_ENABLE true
-ENV HTTP_CORS_ENABLE true
-ENV HTTP_CORS_ALLOW_ORIGIN *
-ENV DISCOVERY_SERVICE ""
-ENV NUMBER_OF_MASTERS 1
-ENV SSL_ENABLE=false
-ENV MODE=""
+ENV ES_JAVA_OPTS="-Xms512m -Xmx512m" \
+    CLUSTER_NAME="elasticsearch" \
+    NODE_MASTER=true \
+    NODE_DATA=true \
+    NODE_INGEST=true \
+    HTTP_ENABLE=true \
+    HTTP_CORS_ENABLE=true \
+    HTTP_CORS_ALLOW_ORIGIN=* \
+    DISCOVERY_SERVICE="" \
+    NUMBER_OF_MASTERS=1 \
+    SSL_ENABLE=false \
+    MODE=""
 
 ADD config /elasticsearch/config
 

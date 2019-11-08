@@ -25,7 +25,7 @@ RUN set -x                                                                      
   && curl -fsSL -o yq https://github.com/mikefarah/yq/releases/download/2.1.1/yq_linux_amd64 \
   && chmod 755 yq
 
-FROM quay.io/pires/docker-elasticsearch:6.3.0
+FROM quay.io/pires/docker-elasticsearch:6.4.0
 
 RUN set -x \
 	&& apk add --update --no-cache runit curl
@@ -37,7 +37,7 @@ ENV NODE_NAME="" \
 RUN ./bin/elasticsearch-plugin install --batch ingest-attachment
 
 # Install search-guard
-RUN ./bin/elasticsearch-plugin install --batch -b com.floragunn:search-guard-6:6.3.0-23.1
+RUN ./bin/elasticsearch-plugin install --batch -b com.floragunn:search-guard-6:6.4.0-23.1
 
 RUN chmod +x -R plugins/search-guard-6/tools/*.sh
 

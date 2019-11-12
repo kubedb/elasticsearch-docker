@@ -27,11 +27,11 @@ RUN set -x                                                                      
 
 FROM openjdk:8u181-alpine
 
-ENV ES_VERSION 6.8.0
+ENV ES_VERSION 7.2.0
 
 ENV DOWNLOAD_URL "https://artifacts.elastic.co/downloads/elasticsearch"
-ENV ES_TARBAL "${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz"
-ENV ES_TARBALL_ASC "${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}.tar.gz.asc"
+ENV ES_TARBAL "${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz"
+ENV ES_TARBALL_ASC "${DOWNLOAD_URL}/elasticsearch-${ES_VERSION}-linux-x86_64.tar.gz.asc"
 ENV GPG_KEY "46095ACC8548582C1A2699A9D27D666CD88E42B4"
 
 # Install necessary tools
@@ -92,8 +92,8 @@ ENV NODE_NAME="" \
 RUN ./bin/elasticsearch-plugin install --batch ingest-attachment
 
 # Install search-guard
-RUN ./bin/elasticsearch-plugin install --batch -b com.floragunn:search-guard-6:6.8.0-25.4
-RUN chmod +x -R plugins/search-guard-6/tools/*.sh
+RUN ./bin/elasticsearch-plugin install --batch -b com.floragunn:search-guard-7:7.2.0-36.1.0
+RUN chmod +x -R plugins/search-guard-7/tools/*.sh
 
 # Add Elasticsearch configuration files
 ADD config /elasticsearch/config

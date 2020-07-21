@@ -1,6 +1,6 @@
 SHELL=/bin/bash -o pipefail
 
-SOURCE_IMAGE_REF := elasticsearch:7.5.2
+SOURCE_IMAGE_REF := elasticsearch:7.6.2
 
 REGISTRY     ?= kubedb
 BIN          := elasticsearch

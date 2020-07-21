@@ -1,6 +1,6 @@
 SHELL=/bin/bash -o pipefail
 
-SOURCE_IMAGE_REF := floragunncom/sg-elasticsearch:6.8.1-oss-25.1
+SOURCE_IMAGE_REF := floragunncom/sg-elasticsearch:7.0.1-oss-35.0.0
 
 REGISTRY     ?= kubedb
 BIN          := elasticsearch

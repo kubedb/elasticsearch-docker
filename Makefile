@@ -1,6 +1,6 @@
 SHELL=/bin/bash -o pipefail
 
-SOURCE_IMAGE_REF := amazon/opendistro-for-elasticsearch:1.9.0
+SOURCE_IMAGE_REF := amazon/opendistro-for-elasticsearch:1.10.1
 
 REGISTRY     ?= kubedb
 BIN          := elasticsearch

@@ -28,10 +28,14 @@ jobs:
       - name: Available platforms
         run: echo ${{ steps.buildx.outputs.platforms }}
 
-      - name: Build
+      - name: Configure Docker
         env:
           DOCKER_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           USERNAME: 1gtm
         run: |
           docker login --username ${USERNAME} --password ${DOCKER_TOKEN}
-          make push
+
+      - name: Build elasticsearch-init
+        run: |
+          cd elasticsearch-init
+          make release

@@ -5,6 +5,10 @@ BIN        ?= elasticsearch-init
 IMAGE      := $(REGISTRY)/$(BIN)
 TAG        ?= $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")
 
+DOCKER_PLATFORMS := linux/amd64 linux/arm64
+PLATFORM         ?= $(firstword $(DOCKER_PLATFORMS))
+VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
+
 DB_REGISTRY	?=
 DB_BIN		?= elasticsearch
 DB_TAG		?= 7.14.0
@@ -16,31 +20,49 @@ BUILD_DIRS := bin
 $(BUILD_DIRS):
 	@mkdir -p $@
 
-.PHONY: test
-test:
-	echo $(DB_IMAGE)
+container-%:
+	@$(MAKE) container \
+	    --no-print-directory \
+	    PLATFORM=$(subst _,/,$*)
 
-.PHONY: push
-push: container
-	docker push $(IMAGE):$(TAG)
+push-%:
+	@$(MAKE) push \
+	    --no-print-directory \
+	    PLATFORM=$(subst _,/,$*)
 
-.PHONY: retag
-retag: container
-	docker tag $(IMAGE):$(TAG) $(REGISTRY)/$(DB_BIN):$(DB_TAG)
-	docker push $(REGISTRY)/$(DB_BIN):$(DB_TAG)
+all-container: $(addprefix container-, $(subst /,_,$(DOCKER_PLATFORMS)))
+
+all-push: $(addprefix push-, $(subst /,_,$(DOCKER_PLATFORMS)))
 
 .PHONY: container
 container: $(BUILD_DIRS)
-	@rm -rf bin/.dockerfile;                                 \
-	sed                                                      \
-	    -e 's|{ELASTICSEARCH_IMAGE}|$(DB_IMAGE)|g'           \
-	    -e 's|{ELASTICSEARCH_PLUGINS}|$(ES_PLUGINS)|g'       \
-	    Dockerfile.in > bin/.dockerfile;                     \
-	docker build -t $(IMAGE):$(TAG) -f bin/.dockerfile .
+	@echo "container: $(IMAGE):$(VERSION)"
+	@rm -rf bin/.dockerfile;                             \
+	sed                                                  \
+	    -e 's|{ELASTICSEARCH_IMAGE}|$(DB_IMAGE)|g'       \
+	    -e 's|{ELASTICSEARCH_PLUGINS}|$(ES_PLUGINS)|g'   \
+	    Dockerfile > bin/.dockerfile;                    \
+	# ref: https://superuser.com/a/842705
+	tar -czh . | docker buildx build --platform $(PLATFORM) --load --pull -t $(IMAGE):$(VERSION) -f bin/.dockerfile -
+	@echo
+
+push: container
+	@docker push $(IMAGE):$(VERSION)
+	@echo "pushed: $(IMAGE):$(VERSION)"
+	@echo
+
+.PHONY: docker-manifest
+docker-manifest:
+	docker manifest create -a $(IMAGE):$(TAG) $(foreach PLATFORM,$(DOCKER_PLATFORMS),$(IMAGE):$(TAG)_$(subst /,_,$(PLATFORM)))
+	docker manifest push $(IMAGE):$(TAG)
+
+.PHONY: release
+release:
+	@$(MAKE) all-push docker-manifest --no-print-directory
 
 .PHONY: version
 version:
-	@echo ::set-output name=version::$(TAG)
+	@echo ::set-output name=version::$(VERSION)
 
 .PHONY: fmt
 fmt:

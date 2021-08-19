@@ -13,7 +13,6 @@ DB_REGISTRY	?=
 DB_BIN		?= elasticsearch
 DB_TAG		?= 7.14.0
 DB_IMAGE	?= $(shell if [ ! -z $(DB_REGISTRY) ]; then echo $(DB_REGISTRY)/; fi)$(DB_BIN):$(DB_TAG)
-ES_PLUGINS	?=
 
 BUILD_DIRS := bin
 
@@ -40,7 +39,6 @@ container: $(BUILD_DIRS)
 	@rm -rf bin/.dockerfile;                             \
 	sed                                                  \
 	    -e 's|{ELASTICSEARCH_IMAGE}|$(DB_IMAGE)|g'       \
-	    -e 's|{ELASTICSEARCH_PLUGINS}|$(ES_PLUGINS)|g'   \
 	    Dockerfile > bin/.dockerfile;                    \
 	# ref: https://superuser.com/a/842705
 	tar -czh . | docker buildx build --platform $(PLATFORM) --load --pull -t $(IMAGE):$(VERSION) -f bin/.dockerfile -
@@ -66,7 +64,7 @@ version:
 
 .PHONY: fmt
 fmt:
-	@find . -path ./vendor -prune -o -name '*.sh' -exec shfmt -l -w -ci -i 4 {} \;
+	@find ./.. -path ./vendor -prune -o -name '*.sh' -exec shfmt -l -w -ci -i 4 {} \;
 
 .PHONY: verify
 verify: fmt

@@ -39,3 +39,8 @@ jobs:
         run: |
           cd elasticsearch-init
           make release
+
+      - name: Build elasticsearch
+        run: |
+          cd elasticsearch
+          make release

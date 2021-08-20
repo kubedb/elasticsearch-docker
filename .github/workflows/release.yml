@@ -18,20 +18,29 @@ jobs:
         run: |
           make version
 
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
+
       - name: Set up Docker Buildx
-        id: buildx
-        uses: crazy-max/ghaction-docker-buildx@v1
-        with:
-          buildx-version: latest
-          qemu-version: latest
+        uses: docker/setup-buildx-action@v1
 
       - name: Available platforms
         run: echo ${{ steps.buildx.outputs.platforms }}
 
-      - name: Build
-        env:
-          DOCKER_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-          USERNAME: 1gtm
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: 1gtm
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build elasticsearch-init
         run: |
-          docker login --username ${USERNAME} --password ${DOCKER_TOKEN}
-          make push
+          cd elasticsearch-init
+          make release
+
+#   TODO: Add support for custom build image with necessary plugins installed
+#      - name: Build elasticsearch
+#        run: |
+#          cd elasticsearch
+#          make release

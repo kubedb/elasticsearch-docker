@@ -11,11 +11,11 @@ TEMP_CONFIG_DIR=/elasticsearch/temp-config
 # directory for user provided custom files
 CUSTOM_CONFIG_DIR=/elasticsearch/custom-config
 # directory for elasticsearch config files
-CONFIG_DIR=/usr/share/elasticsearch/config
+CONFIG_DIR=/usr/share/opensearch/config
 # directory for default security config files
 DEFAULT_SECURITY_CONFIG_DIR=/elasticsearch/default-securityconfig
 # directory for security config files
-SECURITY_CONFIG_DIR=/usr/share/elasticsearch/plugins/opendistro_security/securityconfig
+SECURITY_CONFIG_DIR=/usr/share/opensearch/plugins/opensearch-security/securityconfig
 
 # List of comma seperated roles
 # NODE_ROLES="master, ingest, data" or NODE_ROLES="master"
@@ -23,8 +23,8 @@ NODE_ROLES=${NODE_ROLES:-""}
 # Make a list of roles
 IFS=',' read -ra ROLES <<<"$NODE_ROLES"
 
-echo "changing the ownership of data folder: /usr/share/elasticsearch/data"
-chown -R "$ELASTICSEARCH_UID":"$ELASTICSEARCH_UID" /usr/share/elasticsearch/data
+echo "changing the ownership of data folder: /usr/share/opensearch/data"
+chown -R "$ELASTICSEARCH_UID":"$ELASTICSEARCH_UID" /usr/share/opensearch/data
 
 # load default config files to config directory
 cp -f -R $DEFAULT_CONFIG_DIR/* $CONFIG_DIR
@@ -108,16 +108,16 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
     chmod "$ORIGINAL_PERMISSION" "$FILE_DIR"
 done
 
-##-------------------------------Open Distro Of Elasticsearch----------------------------------
+##-------------------------------OpenSearch----------------------------------
 
-# load default opendistro securityconfig files to opendistro securityconfig directory
+# load default opensearch securityconfig files to opensearch securityconfig directory
 # if the security is disabled, security config directory will not exist.
 if [ -d $SECURITY_CONFIG_DIR ]; then
     cp -f -R $DEFAULT_SECURITY_CONFIG_DIR/* $SECURITY_CONFIG_DIR
 fi
 
-# for opendistro securitconfig files
-# if security is disabled, opendistro security config directory will not exist.
+# for opensearch securitconfig files
+# if security is disabled, opensearch security config directory will not exist.
 if [ -d $SECURITY_CONFIG_DIR ]; then
 
     # For Elasticsearch security config directory

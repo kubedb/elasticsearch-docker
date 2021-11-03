@@ -15,7 +15,7 @@ CONFIG_DIR=/usr/share/elasticsearch/config
 # directory for default security config files
 DEFAULT_SECURITY_CONFIG_DIR=/elasticsearch/default-securityconfig
 # directory for security config files
-SECURITY_CONFIG_DIR=/usr/share/elasticsearch/plugins/opendistro_security/securityconfig
+SECURITY_CONFIG_DIR=/usr/share/elasticsearch/plugins/search-guard-7/sgconfig
 
 # List of comma seperated roles
 # NODE_ROLES="master, ingest, data" or NODE_ROLES="master"
@@ -108,16 +108,16 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
     chmod "$ORIGINAL_PERMISSION" "$FILE_DIR"
 done
 
-##-------------------------------Open Distro Of Elasticsearch----------------------------------
+##-------------------------------SearchGuard----------------------------------
 
-# load default opendistro securityconfig files to opendistro securityconfig directory
-# if the security is disabled, security config directory will not exist.
+# load default securityconfig files to securityconfig directory
+# if the security is disabled, security config directory will exist.
 if [ -d $SECURITY_CONFIG_DIR ]; then
     cp -f -R $DEFAULT_SECURITY_CONFIG_DIR/* $SECURITY_CONFIG_DIR
 fi
 
-# for opendistro securitconfig files
-# if security is disabled, opendistro security config directory will not exist.
+# for searchGuard securitconfig files
+# if security is disabled, searchGuard security config directory will not exist.
 if [ -d $SECURITY_CONFIG_DIR ]; then
 
     # For Elasticsearch security config directory

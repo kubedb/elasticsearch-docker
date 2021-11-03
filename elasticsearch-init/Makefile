@@ -5,15 +5,13 @@ BIN        ?= elasticsearch-init
 IMAGE      := $(REGISTRY)/$(BIN)
 TAG        ?= $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")
 
-# OpenDistro doesn't have arm64 build
-#	Ref: https://github.com/opendistro-for-elasticsearch/opendistro-build/issues/647#issuecomment-840881996
-DOCKER_PLATFORMS := linux/amd64 #linux/arm64
+DOCKER_PLATFORMS := linux/amd64 linux/arm64
 PLATFORM         ?= $(firstword $(DOCKER_PLATFORMS))
 VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
-DB_REGISTRY	?= amazon
-DB_BIN		?= opendistro-for-elasticsearch
-DB_TAG		?= 1.13.2
+DB_REGISTRY	?= floragunncom
+DB_BIN		?= sg-elasticsearch
+DB_TAG		?= 7.14.2-52.3.0
 DB_IMAGE	?= $(shell if [ ! -z $(DB_REGISTRY) ]; then echo $(DB_REGISTRY)/; fi)$(DB_BIN):$(DB_TAG)
 
 BUILD_DIRS := bin

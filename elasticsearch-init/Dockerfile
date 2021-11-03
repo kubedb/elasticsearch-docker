@@ -23,7 +23,7 @@ RUN apk add --no-cache bash
 COPY scripts/config-merger.sh /usr/local/bin/config-merger.sh
 COPY --from=builder /yq /usr/bin/yq
 COPY --from=elasticsearch /usr/share/elasticsearch/config /elasticsearch/default-config
-COPY --from=elasticsearch /usr/share/elasticsearch/plugins/opendistro_security/securityconfig /elasticsearch/default-securityconfig
+COPY --from=elasticsearch /usr/share/elasticsearch/plugins/search-guard-7/sgconfig /elasticsearch/default-securityconfig
 
 RUN chmod -c 755 /usr/local/bin/config-merger.sh
 

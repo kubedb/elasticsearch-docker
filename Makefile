@@ -1,6 +1,6 @@
 SHELL=/bin/bash -o pipefail
 
-SOURCE_IMAGE_REF := kubedb/elasticsearch-init:7.14.0-xpack-v2021.08.14
+SOURCE_IMAGE_REF := kubedb/elasticsearch-init:7.14.2-searchguard-v2021.11.10
 
 REGISTRY     ?= kubedb
 BIN          := elasticsearch

@@ -17,6 +17,8 @@ RUN set -x \
 
 FROM {ELASTICSEARCH_IMAGE} as elasticsearch
 
+SHELL ["/bin/bash", "-c"]
+
 RUN IFS=',' read -ra PLUGINS <<< "{ELASTICSEARCH_PLUGINS}"; for PLUGIN in "${PLUGINS[@]}"; do /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch $PLUGIN ;done;
 RUN /usr/share/elasticsearch/bin/elasticsearch-plugin list
 

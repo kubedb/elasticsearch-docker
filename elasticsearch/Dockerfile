@@ -17,15 +17,25 @@ RUN set -x \
 
 FROM {ELASTICSEARCH_IMAGE} as elasticsearch
 
-RUN IFS=',' read -ra PLUGINS <<< "{ELASTICSEARCH_PLUGINS}"; for PLUGIN in "${PLUGINS[@]}"; do /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch $PLUGIN ;done;
-RUN /usr/share/elasticsearch/bin/elasticsearch-plugin list
+# Install mapper-attachments (https://www.elastic.co/guide/en/elasticsearch/plugins/5.x/mapper-attachments.html)
+RUN ./bin/elasticsearch-plugin install ingest-attachment
+
+# Install search-guard
+RUN ./bin/elasticsearch-plugin install -b com.floragunn:search-guard-5:5.6.16-19.4
 
 COPY scripts/config-merger.sh /usr/local/bin/config-merger.sh
-COPY scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY scripts/run_sgadmin.sh /usr/local/bin/run_sgadmin.sh
+
 COPY --from=builder /yq /usr/bin/yq
 RUN mkdir -p /elasticsearch/default-config
 RUN cp -r /usr/share/elasticsearch/config/* /elasticsearch/default-config/
 RUN chown 1000:0 -R /elasticsearch/default-config
 
+RUN mkdir -p /elasticsearch/default-securityconfig
+RUN cp -r /usr/share/elasticsearch/plugins/search-guard-5/sgconfig/* /elasticsearch/default-securityconfig/
+RUN chown 1000:0 -R /elasticsearch/default-securityconfig
+
 RUN chmod -c 755 /usr/local/bin/config-merger.sh
-RUN chmod -c 755 /usr/local/bin/docker-entrypoint.sh
+RUN chmod -c 755 /usr/local/bin/run_sgadmin.sh
+
+CMD ["/bin/bash","-c", "/usr/local/bin/run_sgadmin.sh & /usr/share/elasticsearch/bin/elasticsearch"]

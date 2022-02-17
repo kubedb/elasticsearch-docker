@@ -5,15 +5,15 @@ BIN        ?= elasticsearch
 IMAGE      := $(REGISTRY)/$(BIN)
 TAG        ?= $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")
 
-DOCKER_PLATFORMS := linux/amd64 linux/arm64
+DOCKER_PLATFORMS := linux/amd64
 PLATFORM         ?= $(firstword $(DOCKER_PLATFORMS))
 VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
-DB_REGISTRY	?= floragunncom
-DB_BIN		?= sg-elasticsearch
-DB_TAG		?= 7.14.2-52.3.0
+DB_REGISTRY	?=
+DB_BIN		?= elasticsearch
+DB_TAG		?= 5.6.16
 DB_IMAGE	?= $(shell if [ ! -z $(DB_REGISTRY) ]; then echo $(DB_REGISTRY)/; fi)$(DB_BIN):$(DB_TAG)
-ES_PLUGINS	?= repository-s3, repository-azure, repository-hdfs, repository-gcs
+
 
 BUILD_DIRS := bin
 
@@ -40,7 +40,6 @@ container: $(BUILD_DIRS)
 	@rm -rf bin/.dockerfile;                             \
 	sed                                                  \
 	    -e 's|{ELASTICSEARCH_IMAGE}|$(DB_IMAGE)|g'       \
-	    -e 's|{ELASTICSEARCH_PLUGINS}|$(ES_PLUGINS)|g'   \
 	    Dockerfile > bin/.dockerfile;                    \
 	# ref: https://superuser.com/a/842705
 	tar -czh . | docker buildx build --platform $(PLATFORM) --load --pull -t $(IMAGE):$(VERSION) -f bin/.dockerfile -
@@ -76,7 +75,3 @@ verify: fmt
 
 .PHONY: ci
 ci: verify
-
-.PHONY: entrypoint-script
-entrypoint-script:
-	@ wget -O scripts/docker-entrypoint.sh https://raw.githubusercontent.com/elastic/elasticsearch/v${DB_TAG}/distribution/docker/src/docker/bin/docker-entrypoint.sh

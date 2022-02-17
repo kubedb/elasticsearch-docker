@@ -34,13 +34,7 @@ jobs:
           username: 1gtm
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build elasticsearch-init
+      - name: Build elasticsearch
         run: |
-          cd elasticsearch-init
+          cd elasticsearch
           make release
-
-#   TODO: Add support for custom build image with necessary plugins installed
-#      - name: Build elasticsearch
-#        run: |
-#          cd elasticsearch
-#          make release

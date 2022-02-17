@@ -15,7 +15,7 @@ CONFIG_DIR=/usr/share/elasticsearch/config
 # directory for default security config files
 DEFAULT_SECURITY_CONFIG_DIR=/elasticsearch/default-securityconfig
 # directory for security config files
-SECURITY_CONFIG_DIR=/usr/share/elasticsearch/plugins/search-guard-7/sgconfig
+SECURITY_CONFIG_DIR=/usr/share/elasticsearch/plugins/search-guard-5/sgconfig
 
 # List of comma seperated roles
 # NODE_ROLES="master, ingest, data" or NODE_ROLES="master"
@@ -134,8 +134,14 @@ if [ -d $SECURITY_CONFIG_DIR ]; then
         # For yml files, yq tool is used
         if [[ "$EXTENSION" == "yml" ]]; then
             # merge operator generated config with the default one
-            if [ -f $TEMP_CONFIG_DIR/"$FILE_NAME" ]; then
-                yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$FILE_NAME"
+            if [[ "$FILE_NAME" == "sg_internal_users.yml" ]]; then
+                if [ -f $TEMP_CONFIG_DIR/"$FILE_NAME" ]; then
+                    cp -f $TEMP_CONFIG_DIR/"$FILE_NAME" "$FILE_DIR"
+                fi
+            else
+                if [ -f $TEMP_CONFIG_DIR/"$FILE_NAME" ]; then
+                    yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$FILE_NAME"
+                fi
             fi
 
             # merge user provided custom config with the updated one

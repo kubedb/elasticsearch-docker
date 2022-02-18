@@ -20,10 +20,10 @@ FROM {ELASTICSEARCH_DASHBOARD_IMAGE} as elasticsearch_dashboard
 FROM alpine:3.13.1
 
 RUN apk add --no-cache bash
-COPY scripts/config-merger.sh /usr/local/bin/config-merger.sh
+COPY scripts/dashboard-config-merger.sh /usr/local/bin/dashboard-config-merger.sh
 COPY --from=builder /yq /usr/bin/yq
 COPY --from=elasticsearch_dashboard /usr/share/kibana/config /kibana/default-config
 
-RUN chmod -c 755 /usr/local/bin/config-merger.sh
+RUN chmod -c 755 /usr/local/bin/dashboard-config-merger.sh
 
-ENTRYPOINT ["/bin/bash","/usr/local/bin/config-merger.sh"]
+ENTRYPOINT ["/bin/bash","/usr/local/bin/dashboard-config-merger.sh"]

@@ -40,7 +40,12 @@ jobs:
           make release
 
 #   TODO: Add support for custom build image with necessary plugins installed
-#      - name: Build elasticsearch
-#        run: |
-#          cd elasticsearch
-#          make release
+      - name: Build elasticsearch
+        run: |
+          cd elasticsearch
+          make release
+
+      - name: Build elasticsearch-dashboard-init
+        run: |
+          cd elasticsearch-dashboard-init
+          make release

@@ -38,3 +38,8 @@ jobs:
         run: |
           cd elasticsearch-init
           make release
+
+      - name: Build elasticsearch-dashboard-init
+        run: |
+          cd elasticsearch-dashboard-init
+          make release

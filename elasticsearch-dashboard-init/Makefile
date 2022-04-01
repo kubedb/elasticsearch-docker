@@ -5,13 +5,13 @@ BIN        ?= elasticsearch-dashboard-init
 IMAGE      := $(REGISTRY)/$(BIN)
 TAG        ?= $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")
 
-DOCKER_PLATFORMS := linux/amd64 linux/arm64
+DOCKER_PLATFORMS := linux/amd64
 PLATFORM         ?= $(firstword $(DOCKER_PLATFORMS))
 VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
 DASHBOARD_REGISTRY	?=
 DASHBOARD_BIN		?= kibana
-DASHBOARD_TAG		?= 7.14.0
+DASHBOARD_TAG		?= 6.8.22
 DASHBOARD_IMAGE	?= $(shell if [ ! -z $(DASHBOARD_REGISTRY) ]; then echo $(DASHBOARD_REGISTRY)/; fi)$(DASHBOARD_BIN):$(DASHBOARD_TAG)
 
 BUILD_DIRS := bin

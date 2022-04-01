@@ -5,7 +5,7 @@ BIN        ?= elasticsearch-dashboard-init
 IMAGE      := $(REGISTRY)/$(BIN)
 TAG        ?= $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")
 
-DOCKER_PLATFORMS := linux/amd64 linux/arm64
+DOCKER_PLATFORMS := linux/amd64
 PLATFORM         ?= $(firstword $(DOCKER_PLATFORMS))
 VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 

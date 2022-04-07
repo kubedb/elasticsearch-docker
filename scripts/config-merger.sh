@@ -14,6 +14,8 @@ CUSTOM_CONFIG_DIR=/elasticsearch/custom-config
 CONFIG_DIR=/usr/share/elasticsearch/config
 # secure settings directory
 SECURE_SETTINGS_DIR=/elasticsearch/secure-settings
+# user config directory
+USER_CONFIG_DIR=/elasticsearch/user-config
 
 # List of comma seperated roles
 # NODE_ROLES="master, ingest, data" or NODE_ROLES="master"
@@ -143,3 +145,15 @@ if [ -d $SECURE_SETTINGS_DIR ]; then
         done
     fi
 fi
+
+
+if [-d $USER_CONFIG_DIR]; then
+  echo "creating password for built-in and native users"
+  for FILE_DIR in "$USER_CONFIG_DIR"/*; do
+    #extract file name
+    FILE_NAME=$(basename -- "$FILE_DIR")
+    if [ "$FILE_NAME" == "kibana_system"]; then
+      /usr/share/elasticsearch/bin/elasticsearch-reset-password -u kibana_system -i -b --url https://localhost:9200 < <(
+           cat $USER_CONFIG_DIR/$FILE_NAME/password && echo
+           cat $USER_CONFIG_DIR/$FILE_NAME/password
+      )

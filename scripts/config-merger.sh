@@ -157,3 +157,6 @@ if [-d $USER_CONFIG_DIR]; then
            cat $USER_CONFIG_DIR/$FILE_NAME/password && echo
            cat $USER_CONFIG_DIR/$FILE_NAME/password
       )
+    fi
+  done
+fi

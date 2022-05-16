@@ -25,9 +25,17 @@ RUN /usr/share/elasticsearch/bin/elasticsearch-plugin list
 COPY scripts/config-merger.sh /usr/local/bin/config-merger.sh
 COPY scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY --from=builder /yq /usr/bin/yq
+
+# If you need to run as root,
+# you should change the user to root at the beginning of your Dockerfile then change back to the correct user with another USER instruction
+
+USER root
+
 RUN mkdir -p /elasticsearch/default-config
 RUN cp -r /usr/share/elasticsearch/config/* /elasticsearch/default-config/
 RUN chown 1000:0 -R /elasticsearch/default-config
 
 RUN chmod -c 755 /usr/local/bin/config-merger.sh
 RUN chmod -c 755 /usr/local/bin/docker-entrypoint.sh
+
+USER elasticsearch

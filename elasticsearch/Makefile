@@ -11,7 +11,7 @@ VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
 DB_REGISTRY	?= opensearchproject
 DB_BIN		?= opensearch
-DB_TAG		?= 1.2.2
+DB_TAG		?= 1.3.2
 DB_IMAGE	?= $(shell if [ ! -z $(DB_REGISTRY) ]; then echo $(DB_REGISTRY)/; fi)$(DB_BIN):$(DB_TAG)
 ES_PLUGINS	?= repository-s3, repository-azure, repository-hdfs, repository-gcs
 

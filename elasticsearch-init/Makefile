@@ -11,7 +11,7 @@ VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
 DB_REGISTRY	?=
 DB_BIN		?= elasticsearch
-DB_TAG		?= 7.17.1
+DB_TAG		?= 7.17.3
 DB_IMAGE	?= $(shell if [ ! -z $(DB_REGISTRY) ]; then echo $(DB_REGISTRY)/; fi)$(DB_BIN):$(DB_TAG)
 
 BUILD_DIRS := bin

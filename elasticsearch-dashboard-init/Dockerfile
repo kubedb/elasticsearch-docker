@@ -20,6 +20,9 @@ FROM {ELASTICSEARCH_DASHBOARD_IMAGE} as elasticsearch_dashboard
 FROM alpine:3.13.1
 
 RUN apk add --no-cache bash
+# Add non-root user. In alpine the first non-root user will be assigned to UID 1000 and GID 1000
+RUN adduser -D opensearch-dashboards
+USER opensearch-dashboards
 COPY scripts/dashboard-config-merger.sh /usr/local/bin/dashboard-config-merger.sh
 COPY --from=builder /yq /usr/bin/yq
 COPY --from=elasticsearch_dashboard /usr/share/opensearch-dashboards/config /opensearch-dashboards/default-config

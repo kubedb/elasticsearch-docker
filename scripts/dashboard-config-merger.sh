@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -eo pipefail
 set -x
 
@@ -59,4 +58,3 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
     # restore original file permission
     chmod "$ORIGINAL_PERMISSION" "$FILE_DIR"
 done
-

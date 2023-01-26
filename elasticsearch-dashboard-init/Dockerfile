@@ -21,7 +21,7 @@ FROM alpine:3.13.1
 
 RUN apk add --no-cache bash
 # Add non-root user. In alpine the first non-root user will be assigned to UID 1000 and GID 1000
-RUN adduser -D opensearch-dashboards
+RUN adduser -D opensearch-dashboards -u 1000
 USER opensearch-dashboards
 COPY scripts/dashboard-config-merger.sh /usr/local/bin/dashboard-config-merger.sh
 COPY --from=builder /yq /usr/bin/yq

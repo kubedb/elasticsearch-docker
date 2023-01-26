@@ -20,6 +20,8 @@ FROM {ELASTICSEARCH_DASHBOARD_IMAGE} as elasticsearch_dashboard
 FROM alpine:3.13.1
 
 RUN apk add --no-cache bash
+RUN adduser -D kibana -u 1000
+USER kibana
 COPY scripts/dashboard-config-merger.sh /usr/local/bin/dashboard-config-merger.sh
 COPY --from=builder /yq /usr/bin/yq
 COPY --from=elasticsearch_dashboard /usr/share/kibana/config /kibana/default-config

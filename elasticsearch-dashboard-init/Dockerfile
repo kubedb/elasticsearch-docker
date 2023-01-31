@@ -29,6 +29,6 @@ RUN chmod -c 755 /usr/local/bin/dashboard-config-merger.sh
 # Change the user to non root after the script run
 # as non root user don't have file permissions to merge configs
 RUN adduser -D opensearch-dashboards -u 1000
-USER opensearch-dashboards
+USER 1000
 
 ENTRYPOINT ["/bin/bash","/usr/local/bin/dashboard-config-merger.sh"]

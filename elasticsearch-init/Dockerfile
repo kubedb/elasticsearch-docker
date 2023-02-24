@@ -16,14 +16,13 @@ RUN set -x \
   && chmod 755 yq
 
 FROM {ELASTICSEARCH_IMAGE} as elasticsearch
-
 FROM alpine:3.13.1
 
 RUN apk add --no-cache bash
 COPY scripts/config-merger.sh /usr/local/bin/config-merger.sh
 COPY --from=builder /yq /usr/bin/yq
 COPY --from=elasticsearch /usr/share/opensearch/config /elasticsearch/default-config
-COPY --from=elasticsearch /usr/share/opensearch/plugins/opensearch-security/securityconfig /elasticsearch/default-securityconfig
+COPY --from=elasticsearch /usr/share/opensearch/config/opensearch-security /elasticsearch/default-securityconfig
 
 RUN chmod -c 755 /usr/local/bin/config-merger.sh
 

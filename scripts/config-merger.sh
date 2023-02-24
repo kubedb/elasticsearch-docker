@@ -15,7 +15,7 @@ CONFIG_DIR=/usr/share/opensearch/config
 # directory for default security config files
 DEFAULT_SECURITY_CONFIG_DIR=/elasticsearch/default-securityconfig
 # directory for security config files
-SECURITY_CONFIG_DIR=/usr/share/opensearch/plugins/opensearch-security/securityconfig
+SECURITY_CONFIG_DIR=/usr/share/opensearch/config/opensearch-security
 
 # List of comma seperated roles
 # NODE_ROLES="master, ingest, data" or NODE_ROLES="master"

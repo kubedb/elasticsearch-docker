@@ -18,6 +18,7 @@ RUN set -x \
 FROM {ELASTICSEARCH_IMAGE} as elasticsearch
 
 FROM alpine:3.13.1
+LABEL org.opencontainers.image.source https://github.com/kubedb/elasticsearch-docker
 
 RUN apk add --no-cache bash
 COPY scripts/config-merger.sh /usr/local/bin/config-merger.sh

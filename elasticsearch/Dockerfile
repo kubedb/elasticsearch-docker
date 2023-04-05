@@ -16,6 +16,7 @@ RUN set -x \
   && chmod 755 yq
 
 FROM {ELASTICSEARCH_IMAGE} as elasticsearch
+LABEL org.opencontainers.image.source https://github.com/kubedb/elasticsearch-docker
 
 SHELL ["/bin/bash", "-c"]
 

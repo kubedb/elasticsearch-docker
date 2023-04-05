@@ -18,6 +18,7 @@ RUN set -x \
 FROM {ELASTICSEARCH_DASHBOARD_IMAGE} as elasticsearch_dashboard
 
 FROM alpine:3.13.1
+LABEL org.opencontainers.image.source https://github.com/kubedb/elasticsearch-docker
 
 RUN apk add --no-cache bash
 COPY scripts/dashboard-config-merger.sh /usr/local/bin/dashboard-config-merger.sh

@@ -2,7 +2,7 @@ SHELL=/bin/bash -o pipefail
 
 SOURCE_IMAGE_REF := kubedb/elasticsearch-init:7.14.0-xpack-v2021.08.14
 
-REGISTRY     ?= kubedb
+REGISTRY     ?= ghcr.io/kubedb
 BIN          := elasticsearch
 IMAGE        := $(REGISTRY)/$(BIN)
 TAG          := $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")

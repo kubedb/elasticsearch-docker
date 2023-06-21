@@ -1,6 +1,6 @@
 SHELL=/bin/bash -o pipefail
 
-REGISTRY   ?= kubedb
+REGISTRY   ?= ghcr.io/kubedb
 BIN        ?= elasticsearch-dashboard-init
 IMAGE      := $(REGISTRY)/$(BIN)
 TAG        ?= $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")
@@ -11,7 +11,7 @@ VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
 DASHBOARD_REGISTRY	?= opensearchproject
 DASHBOARD_BIN		?= opensearch-dashboards
-DASHBOARD_TAG		?= 2.5.0
+DASHBOARD_TAG		?= 2.8.0
 DASHBOARD_IMAGE	?= $(shell if [ ! -z $(DASHBOARD_REGISTRY) ]; then echo $(DASHBOARD_REGISTRY)/; fi)$(DASHBOARD_BIN):$(DASHBOARD_TAG)
 
 BUILD_DIRS := bin

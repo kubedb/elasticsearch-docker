@@ -1,6 +1,6 @@
 SHELL=/bin/bash -o pipefail
 
-REGISTRY   ?= kubedb
+REGISTRY   ?= ghcr.io/kubedb
 BIN        ?= elasticsearch-init
 IMAGE      := $(REGISTRY)/$(BIN)
 TAG        ?= $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")
@@ -11,7 +11,7 @@ VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
 DB_REGISTRY	?= opensearchproject
 DB_BIN		?= opensearch
-DB_TAG		?= 2.5.0
+DB_TAG		?= 2.8.0
 DB_IMAGE	?= $(shell if [ ! -z $(DB_REGISTRY) ]; then echo $(DB_REGISTRY)/; fi)$(DB_BIN):$(DB_TAG)
 
 BUILD_DIRS := bin

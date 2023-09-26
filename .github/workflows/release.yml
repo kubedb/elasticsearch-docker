@@ -37,10 +37,10 @@ jobs:
           cd elasticsearch-init
           make release
 
-      - name: Build elasticsearch
-        run: |
-          cd elasticsearch
-          make release
+#      - name: Build elasticsearch
+#        run: |
+#          cd elasticsearch
+#          make release
 
       - name: Build elasticsearch-dashboard-init
         run: |

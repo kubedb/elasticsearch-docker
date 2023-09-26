@@ -11,7 +11,7 @@ VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
 DASHBOARD_REGISTRY	?= opensearchproject
 DASHBOARD_BIN		?= opensearch-dashboards
-DASHBOARD_TAG		?= 1.3.12
+DASHBOARD_TAG		?= 1.3.13
 DASHBOARD_IMAGE	?= $(shell if [ ! -z $(DASHBOARD_REGISTRY) ]; then echo $(DASHBOARD_REGISTRY)/; fi)$(DASHBOARD_BIN):$(DASHBOARD_TAG)
 
 BUILD_DIRS := bin

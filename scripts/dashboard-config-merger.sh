@@ -55,6 +55,4 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
 
     fi
 
-    # restore original file permission
-    chmod "$ORIGINAL_PERMISSION" "$FILE_DIR"
 done

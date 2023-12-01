@@ -1,6 +1,6 @@
 SHELL=/bin/bash -o pipefail
 
-REGISTRY   ?= kubedb
+REGISTRY   ?= ghcr.io/kubedb
 BIN        ?= elasticsearch-dashboard-init
 IMAGE      := $(REGISTRY)/$(BIN)
 TAG        ?= $(shell git describe --exact-match --abbrev=0 2>/dev/null || echo "")

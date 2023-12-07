@@ -9,9 +9,9 @@ DOCKER_PLATFORMS := linux/amd64 linux/arm64
 PLATFORM         ?= $(firstword $(DOCKER_PLATFORMS))
 VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
-DB_REGISTRY	?=
-DB_BIN		?= elasticsearch
-DB_TAG		?= 8.11.0
+DB_REGISTRY	?= ghcr.io/appscode-images
+DB_BIN		?= elastic
+DB_TAG		?= 8.11.1
 DB_IMAGE	?= $(shell if [ ! -z $(DB_REGISTRY) ]; then echo $(DB_REGISTRY)/; fi)$(DB_BIN):$(DB_TAG)
 
 BUILD_DIRS := bin

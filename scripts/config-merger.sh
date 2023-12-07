@@ -21,8 +21,10 @@ NODE_ROLES=${NODE_ROLES:-""}
 # Make a list of roles
 IFS=',' read -ra ROLES <<<"$NODE_ROLES"
 
-echo "changing the ownership of data folder: /usr/share/elasticsearch/data"
-chown -R "$ELASTICSEARCH_UID":"$ELASTICSEARCH_UID" /usr/share/elasticsearch/data
+if [[ "$(id -u)" == "0" ]]; then
+  echo "changing the ownership of data folder: /usr/share/elasticsearch/data"
+  chown -R "$ELASTICSEARCH_UID":"$ELASTICSEARCH_UID" /usr/share/elasticsearch/data
+fi
 
 # load default config files to config directory
 cp -f -R $DEFAULT_CONFIG_DIR/* $CONFIG_DIR
@@ -101,9 +103,6 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
             fi
         done
     fi
-
-    # restore original file permission
-    chmod "$ORIGINAL_PERMISSION" "$FILE_DIR"
 done
 
 ##----------------------------------------Elasticsearch Keystore------------------------------------

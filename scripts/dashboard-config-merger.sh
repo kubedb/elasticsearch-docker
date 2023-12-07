@@ -53,10 +53,6 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
         if [ -f $CUSTOM_CONFIG_DIR/"$FILE_NAME" ]; then
             cp -f $CUSTOM_CONFIG_DIR/"$FILE_NAME" "$FILE_DIR"
         fi
-
     fi
-
-    # restore original file permission
-    chmod "$ORIGINAL_PERMISSION" "$FILE_DIR"
 done
 

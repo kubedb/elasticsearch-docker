@@ -9,9 +9,9 @@ DOCKER_PLATFORMS := linux/amd64 linux/arm64
 PLATFORM         ?= $(firstword $(DOCKER_PLATFORMS))
 VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
-DASHBOARD_REGISTRY	?=
+DASHBOARD_REGISTRY	?= ghcr.io/appscode-images
 DASHBOARD_BIN		?= kibana
-DASHBOARD_TAG		?= 7.17.10
+DASHBOARD_TAG		?= 7.17.15
 DASHBOARD_IMAGE	?= $(shell if [ ! -z $(DASHBOARD_REGISTRY) ]; then echo $(DASHBOARD_REGISTRY)/; fi)$(DASHBOARD_BIN):$(DASHBOARD_TAG)
 
 BUILD_DIRS := bin

@@ -1,4 +1,4 @@
-FROM golang:1.21 AS yq
+FROM golang:1.22 AS yq
 
 RUN set -x \
   && apt-get update \
@@ -13,7 +13,7 @@ RUN set -x \
 
 FROM {ELASTICSEARCH_IMAGE} as elasticsearch
 
-FROM alpine:3.18.5
+FROM alpine:3.20.0
 
 RUN apk add --no-cache bash
 

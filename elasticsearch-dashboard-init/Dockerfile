@@ -1,4 +1,4 @@
-FROM golang:1.22 AS yq
+FROM golang:1.23 AS yq
 
 RUN set -x \
   && apt-get update \
@@ -13,7 +13,7 @@ RUN set -x \
 
 FROM {ELASTICSEARCH_DASHBOARD_IMAGE} as elasticsearch_dashboard
 
-FROM alpine:3.20.0
+FROM alpine:3.20.2
 
 RUN apk add --no-cache bash
 COPY scripts/dashboard-config-merger.sh /usr/local/bin/dashboard-config-merger.sh

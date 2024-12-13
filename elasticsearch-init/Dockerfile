@@ -22,5 +22,8 @@ COPY --from=elasticsearch /usr/share/opensearch/config /elasticsearch/default-co
 COPY --from=elasticsearch /usr/share/opensearch/config/opensearch-security /elasticsearch/default-securityconfig
 
 RUN chmod -c 755 /usr/local/bin/config-merger.sh
+RUN chown -R 1000:0 /elasticsearch/default-config
+RUN chown -R 1000:0 /elasticsearch/default-securityconfig
+
 
 ENTRYPOINT ["/bin/bash","/usr/local/bin/config-merger.sh"]

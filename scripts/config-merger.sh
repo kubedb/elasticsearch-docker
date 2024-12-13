@@ -22,20 +22,14 @@ SECURITY_CONFIG_DIR=/usr/share/opensearch/config/opensearch-security
 NODE_ROLES=${NODE_ROLES:-""}
 # Make a list of roles
 IFS=',' read -ra ROLES <<<"$NODE_ROLES"
-#sleep 10000
 
 if [[ "$(id -u)" == "0" ]]; then
       echo "changing the ownership of data folder: /usr/share/opensearch/data"
       chown -R "$ELASTICSEARCH_UID":"$ELASTICSEARCH_UID" /usr/share/opensearch/data
 fi
 
-#chown -R "$ELASTICSEARCH_UID":"$ELASTICSEARCH_UID" $DEFAULT_CONFIG_DIR
-
-
-
 # load default config files to config directory
 cp -f -R $DEFAULT_CONFIG_DIR/* $CONFIG_DIR
-echo "PASSED IT MANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN"
 
 # For Elasticsearch config directory
 for FILE_DIR in "$CONFIG_DIR"/*; do

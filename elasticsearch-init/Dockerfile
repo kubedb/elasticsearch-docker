@@ -21,9 +21,12 @@ COPY --from=yq /yq /usr/bin/yq
 COPY --from=elasticsearch /usr/share/opensearch/config /elasticsearch/default-config
 COPY --from=elasticsearch /usr/share/opensearch/config/opensearch-security /elasticsearch/default-securityconfig
 
-RUN chmod -c 755 /usr/local/bin/config-merger.sh
-RUN chown -R 1000:0 /elasticsearch/default-config
-RUN chown -R 1000:0 /elasticsearch/default-securityconfig
+RUN chmod -c 777 /usr/local/bin/config-merger.sh
 
+RUN chgrp -R 0 /elasticsearch/default-config \
+  && chmod -R g=u /elasticsearch/default-config
+
+RUN chgrp -R 0 /elasticsearch/default-securityconfig \
+  && chmod -R g=u /elasticsearch/default-securityconfig
 
 ENTRYPOINT ["/bin/bash","/usr/local/bin/config-merger.sh"]

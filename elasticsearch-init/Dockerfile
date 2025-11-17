@@ -23,4 +23,4 @@ COPY --from=elasticsearch /usr/share/elasticsearch/config /elasticsearch/default
 
 RUN chmod -c 755 /usr/local/bin/config-merger.sh
 
-ENTRYPOINT ["/bin/bash","/usr/local/bin/config-merger.sh"]
+ENTRYPOINT ["/bin/bash","-c", "cp -r /usr/local/bin/config-merger.sh /usr/share/elasticsearch/config/config-merger.sh && cp -r /elasticsearch/default-config/ /elasticsearch/config-share"]

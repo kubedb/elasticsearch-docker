@@ -101,6 +101,7 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
 done
 
 ##----------------------------------------Elasticsearch Keystore------------------------------------
+
 # For secure settings
 # On "$ /usr/share/elasticsearch/bin/elasticsearch-keystore create" command,
 # elasticsearch.keystore file is created at config directory.

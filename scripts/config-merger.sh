@@ -3,9 +3,10 @@
 set -eo pipefail
 set -x
 
+
 ELASTICSEARCH_UID=${ELASTICSEARCH_UID:-1000}
 # directory for default config files
-DEFAULT_CONFIG_DIR=/elasticsearch/default-config
+DEFAULT_CONFIG_DIR=/elasticsearch/config-share/default-config
 # directory for operator generated files
 TEMP_CONFIG_DIR=/elasticsearch/temp-config
 # directory for user provided custom files
@@ -113,6 +114,7 @@ done
 # Create the keystore, later add the secure settings to keystore.
 # Since the keystore is generated even before starting the main container, no need to
 # restart/reload the secure settings.
+
 if [ -d $SECURE_SETTINGS_DIR ]; then
     echo "Updating secure settings..."
     if [ -f $CONFIG_DIR/elasticsearch.keystore ]; then
@@ -142,3 +144,6 @@ if [ -d $SECURE_SETTINGS_DIR ]; then
         done
     fi
 fi
+
+
+

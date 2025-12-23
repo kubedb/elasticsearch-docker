@@ -3,15 +3,62 @@
 set -eo pipefail
 set -x
 
+install_yq() {
+  if command -v yq >/dev/null 2>&1; then
+    echo "yq already available"
+    return 0
+  fi
+
+  echo "Installing yq..."
+
+  # Detect architecture
+  ARCH=$(uname -m)
+  case "$ARCH" in
+    x86_64|amd64) YQ_BINARY="yq_linux_amd64" ;;
+    aarch64|arm64) YQ_BINARY="yq_linux_arm64" ;;
+    armv7l) YQ_BINARY="yq_linux_arm" ;;
+    *) echo "ERROR: Unsupported architecture: $ARCH" >&2; exit 1 ;;
+  esac
+
+  # Download yq binary to /tmp (writable by non-root user)
+  YQ_URL="https://github.com/mikefarah/yq/releases/latest/download/${YQ_BINARY}"
+
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsSL "$YQ_URL" -o /tmp/yq
+  elif command -v wget >/dev/null 2>&1; then
+    wget -qO /tmp/yq "$YQ_URL"
+  else
+    echo "ERROR: curl or wget required to install yq" >&2
+    exit 1
+  fi
+
+  chmod +x /tmp/yq
+  export PATH="/tmp:$PATH"
+
+  if ! /tmp/yq --version >/dev/null 2>&1; then
+    echo "ERROR: yq installation failed" >&2
+    exit 1
+  fi
+
+  echo "yq installed successfully"
+}
+
+
+# Call the installer (add this after the chown block, around line 35)
+install_yq
+
+
 ELASTICSEARCH_UID=${ELASTICSEARCH_UID:-1000}
 # directory for operator generated files
 TEMP_CONFIG_DIR=/elasticsearch/temp-config
 # directory for user provided custom files
-CUSTOM_CONFIG_DIR=/elasticsearch/custom-config
+CUSTOM_CONFIG_DIR=/usr/share/elasticsearch/config/custom-config
 # directory for elasticsearch config files
 CONFIG_DIR=/usr/share/elasticsearch/config
 # secure settings directory
 SECURE_SETTINGS_DIR=/elasticsearch/secure-settings
+#Apply Config
+APPLY_CONFIG="applyconfig"
 
 # List of comma seperated roles
 # NODE_ROLES="master, ingest, data" or NODE_ROLES="master"
@@ -47,7 +94,13 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
 
         # merge user provided custom config with the updated one
         if [ -f $CUSTOM_CONFIG_DIR/"$FILE_NAME" ]; then
-            yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$FILE_NAME"
+            yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' -i "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$FILE_NAME"
+        fi
+
+        #merge applyconfig files with the updated one
+        APPLY_CONFIG_FILE_NAME="$APPLY_CONFIG-$FILE_NAME"
+        if [ -f $TEMP_CONFIG_DIR/"$APPLY_CONFIG_FILE_NAME" ]; then
+            yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' -i "$FILE_DIR" $TEMP_CONFIG_DIR/"$APPLY_CONFIG_FILE_NAME"
         fi
 
         for RoleName in "${ROLES[@]}"; do
@@ -65,8 +118,14 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
 
             # merge user provided custom config with the updated one
             if [ -f $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME" ]; then
-                yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME"
+                yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' -i "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME"
             fi
+            #merge applyconfig files with the updated one
+            APPLY_CONFIG_ROLE_FILE_NAME="$APPLY_CONFIG-$ROLE_FILE_NAME"
+            if [ -f $TEMP_CONFIG_DIR/"$APPLY_CONFIG_ROLE_FILE_NAME" ]; then
+                yq eval-all 'select(fileIndex == 0) * select(fileIndex == 1)' -i "$FILE_DIR" $TEMP_CONFIG_DIR/"$APPLY_CONFIG_ROLE_FILE_NAME"
+            fi
+
         done
     else
         # process non-yml files

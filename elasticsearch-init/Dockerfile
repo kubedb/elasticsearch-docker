@@ -21,7 +21,7 @@ COPY scripts/config-merger.sh /usr/local/bin/config-merger.sh
 COPY --from=yq /yq /usr/bin/yq
 COPY --from=elasticsearch /usr/share/elasticsearch/config /elasticsearch/default-config
 
-RUN chmod -c 755 /usr/local/bin/config-merger.sh
+RUN chmod -c 755 /usr/local/bin/config-merger.sh /usr/bin/yq
 
-ENTRYPOINT ["/bin/bash","-c", "cp -r /usr/local/bin/config-merger.sh /usr/share/elasticsearch/config/config-merger.sh && cp -r /elasticsearch/default-config/* /usr/share/elasticsearch/config"]
+ENTRYPOINT ["/bin/bash","-c", "cp /usr/bin/yq /usr/share/elasticsearch/config/yq && cp -r /usr/local/bin/config-merger.sh /usr/share/elasticsearch/config/config-merger.sh && cp -r /elasticsearch/default-config/* /usr/share/elasticsearch/config"]
 

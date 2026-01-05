@@ -16,6 +16,8 @@ CONFIG_DIR=/usr/share/opensearch/config
 DEFAULT_SECURITY_CONFIG_DIR=/elasticsearch/default-securityconfig
 # directory for security config files
 SECURITY_CONFIG_DIR=/usr/share/opensearch/plugins/opensearch-security/securityconfig
+#Apply Config
+APPLY_CONFIG="applyconfig"
 
 # List of comma seperated roles
 # NODE_ROLES="master, ingest, data" or NODE_ROLES="master"
@@ -57,6 +59,12 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
             yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$FILE_NAME"
         fi
 
+        #merge applyconfig file with the updated one
+        APPLY_CONFIG_FILE_NAME="$APPLY_CONFIG-$FILE_NAME"
+        if [ -f $TEMP_CONFIG_DIR/"$APPLY_CONFIG_FILE_NAME" ]; then
+            yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$APPLY_CONFIG_FILE_NAME"
+        fi
+
         for RoleName in "${ROLES[@]}"; do
             # remove leading and trailing spaces
             RoleName=$(echo $RoleName)
@@ -73,6 +81,11 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
             # merge user provided custom config with the updated one
             if [ -f $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME" ]; then
                 yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME"
+            fi
+            #merge applyconfig files with the updated one
+            APPLY_CONFIG_ROLE_FILE_NAME="$APPLY_CONFIG-$ROLE_FILE_NAME"
+            if [ -f $TEMP_CONFIG_DIR/"$APPLY_CONFIG_ROLE_FILE_NAME" ]; then
+                yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$APPLY_CONFIG_ROLE_FILE_NAME"
             fi
         done
     else
@@ -141,6 +154,11 @@ if [ -d $SECURITY_CONFIG_DIR ]; then
             if [ -f $CUSTOM_CONFIG_DIR/"$FILE_NAME" ]; then
                 yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$FILE_NAME"
             fi
+            #merge applyconfig file with the updated one
+            APPLY_CONFIG_FILE_NAME="$APPLY_CONFIG-$FILE_NAME"
+            if [ -f $TEMP_CONFIG_DIR/"$APPLY_CONFIG_FILE_NAME" ]; then
+                yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$APPLY_CONFIG_FILE_NAME"
+            fi
 
             for RoleName in "${ROLES[@]}"; do
                 # remove leading and trailing spaces
@@ -158,6 +176,12 @@ if [ -d $SECURITY_CONFIG_DIR ]; then
                 # merge user provided custom config with the updated one
                 if [ -f $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME" ]; then
                     yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME"
+                fi
+
+                #merge applyconfig files with the updated one
+                APPLY_CONFIG_ROLE_FILE_NAME="$APPLY_CONFIG-$ROLE_FILE_NAME"
+                if [ -f $TEMP_CONFIG_DIR/"$APPLY_CONFIG_ROLE_FILE_NAME" ]; then
+                    yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$APPLY_CONFIG_ROLE_FILE_NAME"
                 fi
             done
         else

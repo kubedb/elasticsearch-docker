@@ -17,14 +17,18 @@ DEFAULT_SECURITY_CONFIG_DIR=/elasticsearch/default-securityconfig
 # directory for security config files
 SECURITY_CONFIG_DIR=/usr/share/opensearch/plugins/opensearch-security/securityconfig
 
+INLINE_CONFIG="inline"
+
 # List of comma seperated roles
 # NODE_ROLES="master, ingest, data" or NODE_ROLES="master"
 NODE_ROLES=${NODE_ROLES:-""}
 # Make a list of roles
 IFS=',' read -ra ROLES <<<"$NODE_ROLES"
 
-echo "changing the ownership of data folder: /usr/share/opensearch/data"
-chown -R "$ELASTICSEARCH_UID":"$ELASTICSEARCH_UID" /usr/share/opensearch/data
+if [[ "$(id -u)" == "0" ]]; then
+      echo "changing the ownership of data folder: /usr/share/opensearch/data"
+      chown -R "$ELASTICSEARCH_UID":"$ELASTICSEARCH_UID" /usr/share/opensearch/data
+fi
 
 # load default config files to config directory
 cp -f -R $DEFAULT_CONFIG_DIR/* $CONFIG_DIR
@@ -55,6 +59,12 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
             yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$FILE_NAME"
         fi
 
+        #merge inline-config file with the updated one
+        INLINE_CONFIG_FILE_NAME="$INLINE_CONFIG-$FILE_NAME"
+        if [ -f $TEMP_CONFIG_DIR/"$INLINE_CONFIG_FILE_NAME" ]; then
+            yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$INLINE_CONFIG_FILE_NAME"
+        fi
+
         for RoleName in "${ROLES[@]}"; do
             # remove leading and trailing spaces
             RoleName=$(echo $RoleName)
@@ -71,6 +81,11 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
             # merge user provided custom config with the updated one
             if [ -f $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME" ]; then
                 yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME"
+            fi
+            #merge inline-config files with the updated one
+            INLINE_CONFIG_ROLE_FILE_NAME="$INLINE_CONFIG-$ROLE_FILE_NAME"
+            if [ -f $TEMP_CONFIG_DIR/"$INLINE_CONFIG_ROLE_FILE_NAME" ]; then
+                yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$INLINE_CONFIG_ROLE_FILE_NAME"
             fi
         done
     else
@@ -103,9 +118,6 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
             fi
         done
     fi
-
-    # restore original file permission
-    chmod "$ORIGINAL_PERMISSION" "$FILE_DIR"
 done
 
 ##-------------------------------OpenSearch----------------------------------
@@ -142,6 +154,11 @@ if [ -d $SECURITY_CONFIG_DIR ]; then
             if [ -f $CUSTOM_CONFIG_DIR/"$FILE_NAME" ]; then
                 yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$FILE_NAME"
             fi
+            #merge inline-config file with the updated one
+            INLINE_CONFIG_FILE_NAME="$INLINE_CONFIG-$FILE_NAME"
+            if [ -f $TEMP_CONFIG_DIR/"$INLINE_CONFIG_FILE_NAME" ]; then
+                yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$INLINE_CONFIG_FILE_NAME"
+            fi
 
             for RoleName in "${ROLES[@]}"; do
                 # remove leading and trailing spaces
@@ -159,6 +176,12 @@ if [ -d $SECURITY_CONFIG_DIR ]; then
                 # merge user provided custom config with the updated one
                 if [ -f $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME" ]; then
                     yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME"
+                fi
+
+                #merge inline-config files with the updated one
+                INLINE_CONFIG_ROLE_FILE_NAME="$INLINE_CONFIG-$ROLE_FILE_NAME"
+                if [ -f $TEMP_CONFIG_DIR/"$INLINE_CONFIG_ROLE_FILE_NAME" ]; then
+                    yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$INLINE_CONFIG_ROLE_FILE_NAME"
                 fi
             done
         else
@@ -191,8 +214,5 @@ if [ -d $SECURITY_CONFIG_DIR ]; then
                 fi
             done
         fi
-
-        # restore original file permission
-        chmod "$ORIGINAL_PERMISSION" "$FILE_DIR"
     done
 fi

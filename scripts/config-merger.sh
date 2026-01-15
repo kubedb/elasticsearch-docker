@@ -16,8 +16,8 @@ CONFIG_DIR=/usr/share/opensearch/config
 DEFAULT_SECURITY_CONFIG_DIR=/elasticsearch/default-securityconfig
 # directory for security config files
 SECURITY_CONFIG_DIR=/usr/share/opensearch/plugins/opensearch-security/securityconfig
-#Apply Config
-APPLY_CONFIG="applyconfig"
+
+INLINE_CONFIG="inline"
 
 # List of comma seperated roles
 # NODE_ROLES="master, ingest, data" or NODE_ROLES="master"
@@ -59,10 +59,10 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
             yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$FILE_NAME"
         fi
 
-        #merge applyconfig file with the updated one
-        APPLY_CONFIG_FILE_NAME="$APPLY_CONFIG-$FILE_NAME"
-        if [ -f $TEMP_CONFIG_DIR/"$APPLY_CONFIG_FILE_NAME" ]; then
-            yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$APPLY_CONFIG_FILE_NAME"
+        #merge inline-config file with the updated one
+        INLINE_CONFIG_FILE_NAME="$INLINE_CONFIG-$FILE_NAME"
+        if [ -f $TEMP_CONFIG_DIR/"$INLINE_CONFIG_FILE_NAME" ]; then
+            yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$INLINE_CONFIG_FILE_NAME"
         fi
 
         for RoleName in "${ROLES[@]}"; do
@@ -82,10 +82,10 @@ for FILE_DIR in "$CONFIG_DIR"/*; do
             if [ -f $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME" ]; then
                 yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME"
             fi
-            #merge applyconfig files with the updated one
-            APPLY_CONFIG_ROLE_FILE_NAME="$APPLY_CONFIG-$ROLE_FILE_NAME"
-            if [ -f $TEMP_CONFIG_DIR/"$APPLY_CONFIG_ROLE_FILE_NAME" ]; then
-                yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$APPLY_CONFIG_ROLE_FILE_NAME"
+            #merge inline-config files with the updated one
+            INLINE_CONFIG_ROLE_FILE_NAME="$INLINE_CONFIG-$ROLE_FILE_NAME"
+            if [ -f $TEMP_CONFIG_DIR/"$INLINE_CONFIG_ROLE_FILE_NAME" ]; then
+                yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$INLINE_CONFIG_ROLE_FILE_NAME"
             fi
         done
     else
@@ -154,10 +154,10 @@ if [ -d $SECURITY_CONFIG_DIR ]; then
             if [ -f $CUSTOM_CONFIG_DIR/"$FILE_NAME" ]; then
                 yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$FILE_NAME"
             fi
-            #merge applyconfig file with the updated one
-            APPLY_CONFIG_FILE_NAME="$APPLY_CONFIG-$FILE_NAME"
-            if [ -f $TEMP_CONFIG_DIR/"$APPLY_CONFIG_FILE_NAME" ]; then
-                yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$APPLY_CONFIG_FILE_NAME"
+            #merge inline-config file with the updated one
+            INLINE_CONFIG_FILE_NAME="$INLINE_CONFIG-$FILE_NAME"
+            if [ -f $TEMP_CONFIG_DIR/"$INLINE_CONFIG_FILE_NAME" ]; then
+                yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$INLINE_CONFIG_FILE_NAME"
             fi
 
             for RoleName in "${ROLES[@]}"; do
@@ -178,10 +178,10 @@ if [ -d $SECURITY_CONFIG_DIR ]; then
                     yq merge -i --overwrite "$FILE_DIR" $CUSTOM_CONFIG_DIR/"$ROLE_FILE_NAME"
                 fi
 
-                #merge applyconfig files with the updated one
-                APPLY_CONFIG_ROLE_FILE_NAME="$APPLY_CONFIG-$ROLE_FILE_NAME"
-                if [ -f $TEMP_CONFIG_DIR/"$APPLY_CONFIG_ROLE_FILE_NAME" ]; then
-                    yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$APPLY_CONFIG_ROLE_FILE_NAME"
+                #merge inline-config files with the updated one
+                INLINE_CONFIG_ROLE_FILE_NAME="$INLINE_CONFIG-$ROLE_FILE_NAME"
+                if [ -f $TEMP_CONFIG_DIR/"$INLINE_CONFIG_ROLE_FILE_NAME" ]; then
+                    yq merge -i --overwrite "$FILE_DIR" $TEMP_CONFIG_DIR/"$INLINE_CONFIG_ROLE_FILE_NAME"
                 fi
             done
         else

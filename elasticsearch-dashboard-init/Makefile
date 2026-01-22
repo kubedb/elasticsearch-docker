@@ -11,7 +11,7 @@ VERSION          = $(TAG)_$(subst /,_,$(PLATFORM))
 
 DASHBOARD_REGISTRY	?= ghcr.io/appscode-images
 DASHBOARD_BIN		?= kibana
-DASHBOARD_TAG		?= 9.1.3
+DASHBOARD_TAG		?= 9.2.3
 DASHBOARD_IMAGE	?= $(shell if [ ! -z $(DASHBOARD_REGISTRY) ]; then echo $(DASHBOARD_REGISTRY)/; fi)$(DASHBOARD_BIN):$(DASHBOARD_TAG)
 
 BUILD_DIRS := bin
